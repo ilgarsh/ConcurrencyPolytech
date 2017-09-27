@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 
 public class CircularParallelHandler<E extends Number> implements ElementsHandler<E> {
+
     @Override
     public Vector<E> handle(Vector<E> vector, BiFunction<E, Integer, E> function, int nThreads) {
         Vector<E> results = new Vector<>(vector);
