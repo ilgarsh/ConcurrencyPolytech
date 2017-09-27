@@ -1,4 +1,4 @@
-package practic1;
+package practic1.concurrency;
 
 import java.util.function.BiFunction;
 
