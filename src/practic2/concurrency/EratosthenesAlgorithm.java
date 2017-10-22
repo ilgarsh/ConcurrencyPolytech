@@ -2,9 +2,11 @@ package practic2.concurrency;
 
 import practic2.concurrency.algorithms.Utils;
 
+import java.util.Arrays;
+
 public class EratosthenesAlgorithm {
 
-    static int[] getBasePrimes(Utils.PrimeNumber[] numbers) {
+    static int[] getBasePrimes(Utils.PrimeNumber[] numbers) { ;
         int end = (int) Math.sqrt(numbers.length);
         for (int i = 0; i < end; i++) {
 
@@ -18,7 +20,9 @@ public class EratosthenesAlgorithm {
             }
         }
 
-        return Utils.getPrimes(numbers);
+        int[] basePrimes = Arrays.copyOfRange(Utils.getPrimes(numbers), 0, end);
+
+        return basePrimes;
     }
 
     public static int[] getAllPrimes(int number) {

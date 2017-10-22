@@ -24,7 +24,10 @@ public class DecompositionPrimesAlgorithm implements FinderAlgorithm{
     public int[] getAllPrimes(int[] basePrimes, Utils.PrimeNumber[] numbers) {
         ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
         List<Callable<Object>> calls = new ArrayList<>(nThreads);
+
+        this.nThreads = basePrimes.length < nThreads ? basePrimes.length : nThreads;
         int range = basePrimes.length / nThreads;
+
         for (int i = 0; i < nThreads - 1; i++) {
             int localStart = i * range;
             int localEnd = localStart + range;

@@ -21,7 +21,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int[] m1_DecompositionNumbersAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(100_000, DecompositionNumbersAlgorithm.INSTANCE.withNThreads(10));
+                .find(10_000, DecompositionNumbersAlgorithm.INSTANCE.withNThreads(10));
     }
 
     @Benchmark
@@ -29,7 +29,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int[] m2_DecompositionPrimesAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(100_000, DecompositionPrimesAlgorithm.INSTANCE.withNThreads(10));
+                .find(10_000, DecompositionPrimesAlgorithm.INSTANCE.withNThreads(10));
     }
 
     @Benchmark
@@ -37,7 +37,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int[] m3_ThreadPoolAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(100_000, ThreadPoolAlgorithm.INSTANCE);
+                .find(10_000, ThreadPoolAlgorithm.INSTANCE);
     }
 
     @Benchmark
@@ -45,14 +45,14 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int[] m4_SequentialSearchAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(100_000, SequentialSearchAlgorithm.INSTANCE.withNThreads(1));
+                .find(10_000, SequentialSearchAlgorithm.INSTANCE.withNThreads(10));
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int[] StandartAlgorithm() {
-        return EratosthenesAlgorithm.getAllPrimes(100_000);
+        return EratosthenesAlgorithm.getAllPrimes(10_000);
     }
 
     public static void main(String[] args) throws RunnerException {

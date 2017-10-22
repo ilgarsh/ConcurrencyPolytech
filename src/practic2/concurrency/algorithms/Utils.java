@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
-
-    private static final int currentIndex = 0;
-
     public static class PrimeNumber {
         private int value;
         private boolean isPrime;
@@ -48,17 +45,18 @@ public class Utils {
             PrimeNumber[] numbers, int start, int end) {
 
         for (int i = start; i < end; i++) {
-            for (Integer basePrime : basePrimes) {
-                if (numbers[i].isPrime() && isNotPrime(numbers[i].getValue(), basePrime)) {
+            int j = 0;
+            int currentPrime = basePrimes[j];
+            while (j < basePrimes.length && currentPrime < numbers[i].getValue()) {
+                if (numbers[i].getValue() % currentPrime == 0) {
                     numbers[i].setPrime(false);
                     break;
-                } else {
                 }
+                currentPrime = basePrimes[j++];
             }
         }
         return Utils.getPrimes(numbers);
     }
-
 
     public static int[] getPrimes(PrimeNumber[] numbers) {
         int[] primes = new int[numbers.length];
@@ -71,10 +69,6 @@ public class Utils {
         }
         primes = Arrays.copyOf(primes, primesSize);
         return primes;
-    }
-
-    static boolean isNotPrime(int number, int divider) {
-        return number % divider == 0 && number != divider;
     }
 
     public static int[] concat(int[] first, int[] second) {

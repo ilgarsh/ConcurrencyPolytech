@@ -22,28 +22,27 @@ public class SequentialSearchAlgorithm implements FinderAlgorithm {
 
     @Override
     public int[] getAllPrimes(int[] basePrimes, Utils.PrimeNumber[] numbers) {
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-        List<Callable<Boolean>> calls = new ArrayList<>(nThreads);
+        Thread[] threads = new Thread[nThreads];
         for (int i = 0; i < nThreads; i++) {
-            calls.add( () -> search(basePrimes, numbers));
+            threads[i] = new Thread( () -> search(basePrimes, numbers));
+            threads[i].start();
         }
 
-        try {
-            executorService.invokeAll(calls);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
-        executorService.shutdown();
 
         return Utils.getPrimes(numbers);
     }
 
-    private boolean search(int[] basePrimes, Utils.PrimeNumber[] numbers) {
+    private void search(int[] basePrimes, Utils.PrimeNumber[] numbers) {
         while (true) {
 
             int currentPrime;
-
             synchronized ("lock") {
                 if (currentIndex >= basePrimes.length) {
                     break;
@@ -51,12 +50,12 @@ public class SequentialSearchAlgorithm implements FinderAlgorithm {
                 currentPrime = basePrimes[currentIndex++];
             }
 
-            for (Utils.PrimeNumber number : numbers) {
-                if (Utils.isNotPrime(number.getValue(), currentPrime)) {
-                    number.setPrime(false);
+            int start = basePrimes[basePrimes.length - 1] - 1;
+            for (int i = start; i < numbers.length; i++) {
+                if (numbers[i].isPrime() && numbers[i].getValue() % currentPrime == 0) {
+                    numbers[i].setPrime(false);
                 }
             }
         }
-        return true;
     }
 }

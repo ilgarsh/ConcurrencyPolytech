@@ -10,8 +10,6 @@ public class FinderPrimes {
 
         Utils.PrimeNumber[] numberList = Utils.getNumbers(numbers);
 
-
-
         return EratosthenesAlgorithm.getAllPrimes(numberList);
     }
 

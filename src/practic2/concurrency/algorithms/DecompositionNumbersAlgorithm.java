@@ -19,27 +19,28 @@ public class DecompositionNumbersAlgorithm implements FinderAlgorithm{
 
     @Override
     public int[] getAllPrimes(int[] basePrimes, Utils.PrimeNumber[] numbers) {
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-        List<Callable<Object>> calls = new ArrayList<>(nThreads);
+        Thread[] threads = new Thread[nThreads];
 
         int start = (int) Math.sqrt(numbers.length);
         int range = ( numbers.length - start ) / nThreads;
         for (int i = 0; i < nThreads - 1; i++) {
             int localStart = i * range;
             int localEnd = localStart + range;
-            calls.add(() -> Utils.findPrimes(basePrimes, numbers, localStart, localEnd));
+            threads[i] = new Thread( () -> Utils.findPrimes(basePrimes, numbers, localStart, localEnd));
+            threads[i].start();
         }
         int localStart = (nThreads - 1) * range;
         int localEnd = numbers.length;
-        calls.add(() -> Utils.findPrimes(basePrimes, numbers, localStart, localEnd));
+        threads[nThreads - 1] = new Thread( () -> Utils.findPrimes(basePrimes, numbers, localStart, localEnd));
+        threads[nThreads - 1].start();
 
-        try {
-            executorService.invokeAll(calls);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
-        executorService.shutdown();
 
         return Utils.getPrimes(numbers);
     }
