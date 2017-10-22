@@ -2,6 +2,7 @@ package practic2.concurrency;
 
 import practic2.concurrency.algorithms.DecompositionNumbersAlgorithm;
 import practic2.concurrency.algorithms.DecompositionPrimesAlgorithm;
+import practic2.concurrency.algorithms.SequentialSearchAlgorithm;
 import practic2.concurrency.algorithms.ThreadPoolAlgorithm;
 
 public class Main {
@@ -27,6 +28,18 @@ public class Main {
         int[] primes3 = finderPrimes.find(100, ThreadPoolAlgorithm.INSTANCE);
         for (int prime :
                 primes3) {
+            System.out.println(prime);
+        }
+
+        int[] primes4 = finderPrimes.find(100, SequentialSearchAlgorithm.INSTANCE.withNThreads(5));
+        for (int prime :
+                primes4) {
+            System.out.println(prime);
+        }
+
+        int[] primes5 = EratosthenesAlgorithm.getAllPrimes(100);
+        for (int prime :
+                primes5) {
             System.out.println(prime);
         }
     }

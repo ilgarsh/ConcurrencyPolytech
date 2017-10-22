@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
-public class Benchmarks {
+public class BenchmarksPractic1 {
 
     private int capacity;
     private int nThreads;
@@ -138,7 +138,7 @@ public class Benchmarks {
 
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
-                .include(Benchmarks.class.getSimpleName())
+                .include(practic1.BenchmarksPractic1.class.getSimpleName())
                 .warmupIterations(5)
                 .measurementIterations(5)
                 .forks(1)

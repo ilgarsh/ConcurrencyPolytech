@@ -2,7 +2,7 @@ package practic2.concurrency;
 
 import practic2.concurrency.algorithms.Utils;
 
-class EratosthenesAlgorithm {
+public class EratosthenesAlgorithm {
 
     static int[] getBasePrimes(Utils.PrimeNumber[] numbers) {
         int end = (int) Math.sqrt(numbers.length);
@@ -19,6 +19,24 @@ class EratosthenesAlgorithm {
         }
 
         return Utils.getPrimes(numbers);
+    }
+
+    public static int[] getAllPrimes(int number) {
+        Utils.PrimeNumber[] primeNumbers = Utils.getNumbers(number);
+
+        for (int i = 0; i < primeNumbers.length; i++) {
+
+            Utils.PrimeNumber currentNumber = primeNumbers[i];
+            for (int j = 0; j < i; j++) {
+
+                if (currentNumber.getValue() % primeNumbers[j].getValue() == 0) {
+                    currentNumber.setPrime(false);
+                    break;
+                }
+            }
+        }
+
+        return Utils.getPrimes(primeNumbers);
     }
 
     static int[] getAllPrimes(Utils.PrimeNumber[] numbers) {

@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Utils {
 
+    private static final int currentIndex = 0;
+
     public static class PrimeNumber {
         private int value;
         private boolean isPrime;
@@ -41,7 +43,7 @@ public class Utils {
         return findPrimes(basePrimes, numbers, 0, numbers.length);
     }
 
-    public static int[] findPrimes(
+    static int[] findPrimes(
             int[] basePrimes,
             PrimeNumber[] numbers, int start, int end) {
 
@@ -50,12 +52,13 @@ public class Utils {
                 if (numbers[i].isPrime() && isNotPrime(numbers[i].getValue(), basePrime)) {
                     numbers[i].setPrime(false);
                     break;
+                } else {
                 }
             }
         }
-
-        return getPrimes(numbers);
+        return Utils.getPrimes(numbers);
     }
+
 
     public static int[] getPrimes(PrimeNumber[] numbers) {
         int[] primes = new int[numbers.length];
@@ -70,7 +73,7 @@ public class Utils {
         return primes;
     }
 
-    private static boolean isNotPrime(int number, int divider) {
+    static boolean isNotPrime(int number, int divider) {
         return number % divider == 0 && number != divider;
     }
 
