@@ -1,8 +1,6 @@
 package practic2.concurrency.algorithms;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Utils {
     public static class PrimeNumber {

@@ -6,13 +6,6 @@ import practic2.concurrency.algorithms.FinderAlgorithm;
 public class FinderPrimes {
     public static final FinderPrimes INSTANCE = new FinderPrimes();
 
-    public int[] find(int numbers) {
-
-        Utils.PrimeNumber[] numberList = Utils.getNumbers(numbers);
-
-        return EratosthenesAlgorithm.getAllPrimes(numberList);
-    }
-
     public int[] find(int numbers, FinderAlgorithm nextAlgorithm) {
 
         Utils.PrimeNumber[] numberList = Utils.getNumbers(numbers);

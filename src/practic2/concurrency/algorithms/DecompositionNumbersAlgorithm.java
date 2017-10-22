@@ -1,9 +1,5 @@
 package practic2.concurrency.algorithms;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
-
 public class DecompositionNumbersAlgorithm implements FinderAlgorithm{
 
     private int nThreads = 5;

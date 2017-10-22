@@ -20,9 +20,7 @@ public class EratosthenesAlgorithm {
             }
         }
 
-        int[] basePrimes = Arrays.copyOfRange(Utils.getPrimes(numbers), 0, end);
-
-        return basePrimes;
+        return Arrays.copyOfRange(Utils.getPrimes(numbers), 0, end);
     }
 
     public static int[] getAllPrimes(int number) {
