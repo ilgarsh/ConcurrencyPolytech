@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadPoolAlgorithm implements FinderAlgorithm {
 
@@ -20,6 +21,11 @@ public class ThreadPoolAlgorithm implements FinderAlgorithm {
             executorService.submit( () -> Utils.findPrimes(new int[]{basePrime} , numbers));
         }
         executorService.shutdown();
+        try {
+            while (!executorService.awaitTermination(24L, TimeUnit.HOURS)) {}
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return Utils.getPrimes(numbers);
     }
 }

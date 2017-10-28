@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DecompositionPrimesAlgorithm implements FinderAlgorithm{
 
@@ -46,6 +47,13 @@ public class DecompositionPrimesAlgorithm implements FinderAlgorithm{
         }
 
         executorService.shutdown();
+
+        try {
+            while (!executorService.awaitTermination(24L, TimeUnit.HOURS)) {}
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         return Utils.getPrimes(numbers);
     }

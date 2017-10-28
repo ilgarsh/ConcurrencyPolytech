@@ -7,68 +7,71 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-public class IntBufferWithSyncBlock {
-
-    private final Object lock = new Object();
-
+public class IntBufferWithEvents {
     private int buffer;
 
-    private boolean isEmptyBuffer = true;
+    private volatile AutoResetEvent eventFullBuffer = new AutoResetEvent(false);
+    private volatile AutoResetEvent eventEmptyBuffer = new AutoResetEvent(true);
+
     private boolean isFinish = false;
     private int[] messages;
     private List<Integer> readMessages;
 
-    private int i = 0;
+    private volatile int i = 0;
 
-    private IntBufferWithSyncBlock(int maxNumber) {
+    private IntBufferWithEvents(int maxNumber) {
         messages = IntStream.range(0, maxNumber).toArray();
         readMessages = new ArrayList<>(messages.length);
     }
 
-    private void write() {
+    private void write() throws InterruptedException {
         while (i < messages.length) {
-            synchronized (lock) {
-                if (isEmptyBuffer) {
-                    buffer = messages[i++];
-                    isEmptyBuffer = false;
-                }
-            }
+            eventEmptyBuffer.waitOne(100);
+            buffer = messages[i++];
+            eventFullBuffer.set();
         }
         isFinish = true;
     }
 
-    private void read() {
+    private void read() throws InterruptedException {
         while (!isFinish) {
-            synchronized (lock) {
-                if (!isEmptyBuffer) {
-                    readMessages.add(buffer);
-                    isEmptyBuffer = true;
-                }
-            }
+            eventFullBuffer.waitOne(100);
+            readMessages.add(buffer);
+            eventEmptyBuffer.set();
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
-        IntBufferWithSyncBlock intBuffer = new IntBufferWithSyncBlock(10000);
+        IntBufferWithEvents intBuffer = new IntBufferWithEvents(10000);
         ExecutorService service = Executors.newCachedThreadPool();
-        int nWriters = 10;
+        int nWriters = 100;
         for (int i = 0; i < nWriters; i++) {
-            service.submit(intBuffer::write);
+            service.submit(() -> {
+                try {
+                    intBuffer.read();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         }
-        int nReaders = 10;
+        int nReaders = 100;
         for (int i = 0; i < nReaders; i++) {
-            service.submit(intBuffer::read);
+            service.submit(() -> {
+                try {
+                    intBuffer.write();
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            });
         }
 
         service.shutdown();
 
         while (!service.awaitTermination(24L, TimeUnit.HOURS)) {}
 
-
         System.out.println(Utils.getMissingAndRepeatingNumbers(
                 intBuffer.messages, intBuffer.readMessages)[0]);
 
-        //из-за volatile - количество повторяющихся элементов = 0
         System.out.println(Utils.getMissingAndRepeatingNumbers(
                 intBuffer.messages, intBuffer.readMessages)[1]);
     }
