@@ -22,7 +22,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] m1_DecompositionNumbersAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(1000, DecompositionNumbersAlgorithm.INSTANCE.withNThreads(3));
+                .find(10000, DecompositionNumbersAlgorithm.INSTANCE.withNThreads(3));
     }
 
     @Benchmark
@@ -30,7 +30,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] m2_DecompositionPrimesAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(1000, DecompositionPrimesAlgorithm.INSTANCE.withNThreads(3));
+                .find(10000, DecompositionPrimesAlgorithm.INSTANCE.withNThreads(3));
     }
 
     @Benchmark
@@ -38,7 +38,7 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] m3_ThreadPoolAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(1000, ThreadPoolAlgorithm.INSTANCE);
+                .find(10000, ThreadPoolAlgorithm.INSTANCE);
     }
 
     @Benchmark
@@ -46,14 +46,14 @@ public class BenchmarksPractic2 {
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] m4_SequentialSearchAlgorithm() {
         return FinderPrimes.INSTANCE
-                .find(1000, SequentialSearchAlgorithm.INSTANCE.withNThreads(3));
+                .find(10000, SequentialSearchAlgorithm.INSTANCE.withNThreads(3));
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] m5_StreamAPI() {
-        return IntStream.rangeClosed(2, 1000)
+        return IntStream.rangeClosed(2, 10000)
                .filter(i -> IntStream.rangeClosed(2, (int)Math.sqrt(i))
                        .allMatch(j -> i%j != 0)).toArray();
     }
@@ -62,7 +62,7 @@ public class BenchmarksPractic2 {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int[] StandartAlgorithm() {
-        return EratosthenesAlgorithm.getAllPrimes(1000);
+        return EratosthenesAlgorithm.getAllPrimes(10000);
     }
 
     public static void main(String[] args) throws RunnerException {
