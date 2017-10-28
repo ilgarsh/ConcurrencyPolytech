@@ -14,7 +14,8 @@ public class ThreadPoolAlgorithm implements FinderAlgorithm {
 
     @Override
     public int[] getAllPrimes(int[] basePrimes, Utils.PrimeNumber[] numbers) {
-        ExecutorService executorService = Executors.newFixedThreadPool(basePrimes.length);
+        ExecutorService executorService = Executors.newWorkStealingPool();
+
         List<Callable<Object>> calls = new ArrayList<>(basePrimes.length);
         for (int basePrime : basePrimes) {
             calls.add( () -> Utils.findPrimes(new int[]{basePrime} , numbers));
