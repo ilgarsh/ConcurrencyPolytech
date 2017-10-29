@@ -20,13 +20,19 @@ public class Main {
         System.out.println("Simple lock: miss = " +
                 buffer.getMissingMessages() + ", repeat = " + buffer.getRepeatingMessages());
 
-        //Events - problem with repeating messages
+        //Events - problem with missing and repeating messages
         buffer = new ReadWriteBuffer(nReaders, nWriters,
                 new IntBufferWithEvents(maxNumber));
 
         System.out.println("Events: miss = " +
                 buffer.getMissingMessages() + ", repeat = " + buffer.getRepeatingMessages());
 
+        //Atomic - problem with missing and repeating messages
+        buffer = new ReadWriteBuffer(nReaders, nWriters,
+                new IntBufferWithAtomic(maxNumber));
+
+        System.out.println("Atomic: miss = " +
+                buffer.getMissingMessages() + ", repeat = " + buffer.getRepeatingMessages());
 
         //Semaphore - problem with deadlock
         buffer = new ReadWriteBuffer(1, 1,
