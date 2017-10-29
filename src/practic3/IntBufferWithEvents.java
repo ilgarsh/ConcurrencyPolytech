@@ -2,77 +2,62 @@ package practic3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class IntBufferWithEvents {
+public class IntBufferWithEvents implements IntBuffer {
     private int buffer;
 
     private volatile AutoResetEvent eventFullBuffer = new AutoResetEvent(false);
     private volatile AutoResetEvent eventEmptyBuffer = new AutoResetEvent(true);
 
     private boolean isFinish = false;
-    private int[] messages;
+    private List<Integer> messages;
     private List<Integer> readMessages;
 
     private volatile int i = 0;
 
-    private IntBufferWithEvents(int maxNumber) {
-        messages = IntStream.range(0, maxNumber).toArray();
-        readMessages = new ArrayList<>(messages.length);
+    public IntBufferWithEvents(int maxNumber) {
+        messages = IntStream.range(0, maxNumber).boxed().collect(Collectors.toList());
+        readMessages = new ArrayList<>(messages.size());
     }
 
-    private void write() throws InterruptedException {
-        while (i < messages.length) {
-            eventEmptyBuffer.waitOne(100);
-            buffer = messages[i++];
-            eventFullBuffer.set();
+    @Override
+    public void write() {
+        while (i < messages.size()) {
+            try {
+                eventEmptyBuffer.waitOne(100);
+                buffer = messages.get(i++);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                eventFullBuffer.set();
+            }
         }
         isFinish = true;
     }
 
-    private void read() throws InterruptedException {
+    @Override
+    public void read() {
         while (!isFinish) {
-            eventFullBuffer.waitOne(100);
-            readMessages.add(buffer);
-            eventEmptyBuffer.set();
+            try {
+                eventFullBuffer.waitOne(100);
+                readMessages.add(buffer);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                eventEmptyBuffer.set();
+            }
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        IntBufferWithEvents intBuffer = new IntBufferWithEvents(10000);
-        ExecutorService service = Executors.newCachedThreadPool();
-        int nWriters = 100;
-        for (int i = 0; i < nWriters; i++) {
-            service.submit(() -> {
-                try {
-                    intBuffer.read();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-        int nReaders = 100;
-        for (int i = 0; i < nReaders; i++) {
-            service.submit(() -> {
-                try {
-                    intBuffer.write();
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            });
-        }
+    @Override
+    public List<Integer> getReadMessages() {
+        return readMessages;
+    }
 
-        service.shutdown();
-
-        while (!service.awaitTermination(24L, TimeUnit.HOURS)) {}
-
-        System.out.println(Utils.getMissingAndRepeatingNumbers(
-                intBuffer.messages, intBuffer.readMessages)[0]);
-
-        System.out.println(Utils.getMissingAndRepeatingNumbers(
-                intBuffer.messages, intBuffer.readMessages)[1]);
+    @Override
+    public List<Integer> getSourceMessages() {
+        return messages;
     }
 }
